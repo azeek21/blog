@@ -1,7 +1,9 @@
 package main
 
-import ()
+import (
+	"log"
+)
 
 func main() {
-	log.Println("TO BE IMPLEMENTED")
+	log.Println("[START]: TO BE IMPLEMENTED")
 }
