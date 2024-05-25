@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	err := drawer.DrawPngFromFile("./drawer/image-example.dws", "")
+	drw := drawer.NewDrawer()
+	err := drw.DrawPngFromFile("./logo.dws", "out.png")
 	if err != nil {
 		fmt.Println(err.Error())
 	}

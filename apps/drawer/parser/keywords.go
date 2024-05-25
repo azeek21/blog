@@ -1,5 +1,9 @@
 package drawer_parser
 
+import (
+	"bytes"
+)
+
 type keywords struct {
 	END          []byte
 	COLORS_START []byte
@@ -13,5 +17,13 @@ var KEYWORDS = keywords{
 	COLORS_START: []byte("colors"),
 	IMAGE_START:  []byte("image"),
 	VERSION:      []byte("version"),
-	COMMENT:      []byte("comment"),
+	COMMENT:      []byte("#"),
+}
+
+func IsComment(line []byte) bool {
+	return bytes.HasPrefix(line, KEYWORDS.COMMENT)
+}
+
+func IsEnd(line []byte) bool {
+	return bytes.HasPrefix(line, KEYWORDS.END)
 }

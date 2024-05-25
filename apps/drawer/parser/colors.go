@@ -1,4 +1,4 @@
-package drawer
+package drawer_parser
 
 import (
 	"bufio"
@@ -7,8 +7,6 @@ import (
 	"image/color"
 	"strconv"
 	"strings"
-
-	drawer_parser "github.com/azeek21/blog/apps/drawer/parser"
 )
 
 var BAD_RGBA_ERROR = errors.New("Error parsing RGBA color from input. e.g: x=255,255,0,10")
@@ -25,10 +23,17 @@ func (cm *ColorMap) ReadTillEndAndParse(src *bufio.Reader) error {
 		if err != nil {
 			return err
 		}
-		if bytes.HasPrefix(line, drawer_parser.KEYWORDS.END) {
+
+		if IsComment(line) {
+			continue
+		}
+
+		if IsEnd(line) {
 			break
 		}
-		cm.ParseAndAssign(line)
+		if err := cm.ParseAndAssign(line); err != nil {
+			return err
+		}
 	}
 	return nil
 }
