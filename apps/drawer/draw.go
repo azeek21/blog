@@ -1,46 +1,54 @@
 package drawer
 
 import (
+	"fmt"
 	"image"
-	"image/color"
 	"image/draw"
 	"image/png"
 	"os"
+
+	drawer_parser "github.com/azeek21/blog/apps/drawer/parser"
 )
 
-func Draw(output string, w, h int) error {
-	png_output := output // output image lives here
+type Drawer struct {
+	Colors *drawer_parser.ColorMap
+	Src    *drawer_parser.ImageSource
+	Dst    *image.RGBA
+	Scale  int
+}
 
-	img_source := image.NewRGBA(image.Rect(0, 0, w, h))
-	colors := make(map[int]color.RGBA, 2)
-
-	colors[0] = color.RGBA{0, 100, 0, 255}   // green
-	colors[1] = color.RGBA{50, 205, 50, 255} // limegreen
-
-	index_color := 0
-	size_board := 8
-	size_block := int(w / size_board)
-	loc_x := 0
-
-	for curr_x := 0; curr_x < size_board; curr_x++ {
-
-		loc_y := 0
-		for curr_y := 0; curr_y < size_board; curr_y++ {
-
-			draw.Draw(img_source, image.Rect(loc_x, loc_y, loc_x+size_block, loc_y+size_block),
-				&image.Uniform{colors[index_color]}, image.Point{}, draw.Src)
-
-			loc_y += size_block
-			index_color = 1 - index_color // toggle from 0 to 1 to 0 to 1 to ...
-		}
-		loc_x += size_block
-		index_color = 1 - index_color // toggle from 0 to 1 to 0 to 1 to ...
+func NewDrawer() Drawer {
+	return Drawer{
+		Colors: drawer_parser.NewColorMap(),
+		Src:    drawer_parser.NewImageSource(),
+		Dst:    nil,
+		Scale:  1,
 	}
-	myfile, err := os.Create(png_output)
+}
+
+func (d *Drawer) DrawPngFromFile(in, out string) error {
+
+	if err := d.ParseFile(in); err != nil {
+		return err
+	}
+	fmt.Println("Parsing done")
+	fmt.Printf("SCALE: %v\n", d.Scale)
+
+	// Actual drawing
+	d.Dst = image.NewRGBA(image.Rect(0, 0, d.Src.W*d.Scale, d.Src.H*d.Scale))
+
+	for y := 0; y < d.Src.H; y++ {
+		for x := 0; x < d.Src.W; x++ {
+			c := (*d.Colors)[string(d.Src.Bytes[y][x])]
+			draw.Draw(d.Dst, image.Rect(x*d.Scale, y*d.Scale, x*d.Scale+d.Scale, y*d.Scale+d.Scale), &image.Uniform{*c}, image.Point{}, draw.Over)
+		}
+	}
+
+	outFile, err := os.Create(out)
 	if err != nil {
 		return err
 	}
-	defer myfile.Close()
-	png.Encode(myfile, img_source) // ... save image
+	defer outFile.Close()
+	png.Encode(outFile, d.Dst)
 	return nil
 }

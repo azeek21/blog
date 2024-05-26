@@ -1,6 +1,8 @@
-package drawer
+package drawer_parser
 
 import (
+	"bufio"
+	"bytes"
 	"errors"
 	"image/color"
 	"strconv"
@@ -15,15 +17,36 @@ func NewColorMap() *ColorMap {
 	return &ColorMap{}
 }
 
-func (cm *ColorMap) ParseAndAssign(str string) error {
-	keyVal := strings.Split(str, "=")
+func (cm *ColorMap) ReadTillEndAndParse(src *bufio.Reader) error {
+	for {
+		line, _, err := src.ReadLine()
+		if err != nil {
+			return err
+		}
+
+		if IsComment(line) {
+			continue
+		}
+
+		if IsEnd(line) {
+			break
+		}
+		if err := cm.ParseAndAssign(line); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (cm *ColorMap) ParseAndAssign(src []byte) error {
+	keyVal := bytes.Split(src, []byte{byte('=')})
 	var err error
 
 	if len(keyVal) != 2 {
 		return BAD_RGBA_ERROR
 	}
 
-	(*cm)[keyVal[0]], err = ParseRgba(&keyVal[1])
+	(*cm)[string(keyVal[0])], err = ParseRgba(keyVal[1])
 	if err != nil {
 		return err
 	}
@@ -31,9 +54,9 @@ func (cm *ColorMap) ParseAndAssign(str string) error {
 	return nil
 }
 
-func ParseRgba(rgba *string) (*color.RGBA, error) {
+func ParseRgba(rgba []byte) (*color.RGBA, error) {
 	res := &color.RGBA{A: 255}
-	RGBA := strings.Split((*rgba), ",")
+	RGBA := strings.Split(string(rgba), ",")
 
 	if len(RGBA) != 3 && len(RGBA) != 4 {
 		return nil, BAD_RGBA_ERROR
