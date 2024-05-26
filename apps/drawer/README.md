@@ -1,5 +1,8 @@
-# includes
+# resources
 * [Drawer](#Drawer)
+* [Syntax](#snytax)
+* [Usage](#usage)
+* [Dev notes](#notes)
 
 ## Drawer
 A package inspired by [xpm](https://en.wikipedia.org/wiki/X_PixMap).
@@ -36,4 +39,23 @@ end
 ```
 
 ### usage
-TODO
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/azeek21/blog/apps/drawer"
+)
+
+func main() {
+	drw := drawer.NewDrawer()
+	err := drw.DrawPngFromFile("./logo.dws", "out.png")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+```
+
+### notes
+Looks like I'll be spending too much time with this thing. There's tons of ideas flowing into my mind. But I want to get this project out, it was needed as a part of an assignment anyways.

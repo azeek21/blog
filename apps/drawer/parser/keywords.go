@@ -10,6 +10,8 @@ type keywords struct {
 	IMAGE_START  []byte
 	VERSION      []byte
 	COMMENT      []byte
+	SCALE        []byte
+	EQUAL        []byte
 }
 
 var KEYWORDS = keywords{
@@ -18,6 +20,8 @@ var KEYWORDS = keywords{
 	IMAGE_START:  []byte("image"),
 	VERSION:      []byte("version"),
 	COMMENT:      []byte("#"),
+	SCALE:        []byte("scale"),
+	EQUAL:        []byte("="),
 }
 
 func IsComment(line []byte) bool {
