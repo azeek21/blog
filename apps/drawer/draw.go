@@ -1,7 +1,6 @@
 package drawer
 
 import (
-	"fmt"
 	"image"
 	"image/draw"
 	"image/png"
@@ -31,8 +30,6 @@ func (d *Drawer) DrawPngFromFile(in, out string) error {
 	if err := d.ParseFile(in); err != nil {
 		return err
 	}
-	fmt.Println("Parsing done")
-	fmt.Printf("SCALE: %v\n", d.Scale)
 
 	// Actual drawing
 	d.Dst = image.NewRGBA(image.Rect(0, 0, d.Src.W*d.Scale, d.Src.H*d.Scale))

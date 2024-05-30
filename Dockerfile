@@ -7,8 +7,9 @@ RUN go mod download && go mod verify
 
 COPY . .
 
-RUN go build -o /migrate ./cmd/migrate.go && go build -o /start ./cmd/start.go
+RUN go build -o /migrate ./cmd/migrate.go
+RUN go build -o /start ./cmd/start.go
 
-EXPOSE 8080
+EXPOSE 8888
 
 CMD /migrate && /start
