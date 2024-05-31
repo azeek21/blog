@@ -6,7 +6,8 @@ import (
 
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/repository"
-	"github.com/joho/godotenv"
+	"github.com/azeek21/blog/pkg/utils"
+	"github.com/spf13/viper"
 )
 
 func must(x error) {
@@ -16,34 +17,39 @@ func must(x error) {
 	}
 }
 
-var superUserrole = "super"
-
 func main() {
-	err := godotenv.Load()
+	err := utils.InitConfig("dev")
 	must(err)
 
-	db, err := repository.CreateDb()
+	dbConf := repository.PostgresConnectionConfig{}
+	dbConf, err = utils.LoadConfig(dbConf)
+	must(err)
+	db, err := repository.CreateDb(dbConf)
 	must(err)
 
 	err = db.AutoMigrate(&models.User{}, &models.Role{}, &models.Article{})
 	must(err)
 
 	repo := repository.NewRepositroy(db)
-	adminRole, err := repo.RoleRepository.CreateRole(&models.Role{
-		Code:        superUserrole,
-		Name:        "Admin",
-		Description: "Administrator over everything",
-	})
-	must(err)
-	user, err := repo.CreateUser(&models.User{
-		FullName: "malton Aka Azeek",
-		Username: "azeek",
-		Email:    "pymanuz@gmail.com",
-		Roles: []models.Role{
-			*adminRole,
-		},
-	})
-	must(err)
-	log.Printf("Migration SUCCESS\nCreated super user:\nName: %v, Email: %v, Roles: %v\n", user.FullName, user.Email, user.Roles)
+	roles := viper.GetStringSlice("ROLES")
+	for _, role := range roles {
+		repo.CreateRole(&models.Role{
+			Code: role,
+		})
+	}
 
+	superUser := &models.User{
+		Email:    viper.GetString("SU_EMAIL"),
+		FullName: viper.GetString("SU_FULL_NAME"),
+		Username: viper.GetString("SU_USERNAME"),
+		Password: viper.GetString("SU_PWD"),
+		Roles:    []models.Role{{Code: viper.GetString("SU_ROLE")}},
+	}
+
+	_, err = repo.CreateUser(superUser)
+	if err != nil {
+		repo.UpdateUser(superUser)
+	}
+
+	log.Printf("Migration SUCCESS\nCreated super user:\nName: %v, Email: %v, Roles: %v\n", superUser.FullName, superUser.Email, superUser.Roles)
 }

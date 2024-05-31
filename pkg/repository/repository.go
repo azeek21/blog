@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/azeek21/blog/models"
 	"gorm.io/driver/postgres"
@@ -17,6 +16,7 @@ type UserRepository interface {
 	DeleteUser(user *models.User) (bool, error)
 	AddRoles(user *models.User, roles []string) (*models.User, error)
 	RemoveRoles(user *models.User, roles []string) (*models.User, error)
+	GetUserByEmail(email string) (*models.User, error)
 }
 
 type RoleRepository interface {
@@ -43,11 +43,11 @@ func NewRepositroy(db *gorm.DB) *Repository {
 }
 
 type PostgresConnectionConfig struct {
-	Host     string
-	User     string
-	Password string
-	Dbname   string
-	Port     string
+	Host     string `mapstructure:"DB_HOST"`
+	User     string `mapstructure:"DB_USER"`
+	Password string `mapstructure:"DB_PWD"`
+	Dbname   string `mapstructure:"DB_NAME"`
+	Port     string `mapstructure:"DB_PORT"`
 }
 
 func connectDb(config PostgresConnectionConfig) (*gorm.DB, error) {
@@ -57,13 +57,15 @@ func connectDb(config PostgresConnectionConfig) (*gorm.DB, error) {
 	return gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 }
 
-func CreateDb() (*gorm.DB, error) {
-	config := PostgresConnectionConfig{
-		Host:     os.Getenv("PG_HOST"),
-		User:     os.Getenv("PG_USER"),
-		Password: os.Getenv("PG_PWD"),
-		Dbname:   os.Getenv("PG_DB"),
-		Port:     os.Getenv("PG_PORT"),
-	}
+func CreateDb(config PostgresConnectionConfig) (*gorm.DB, error) {
+	//	config := PostgresConnectionConfig{
+	//		Host:     viper.GetString("DB_HOST"),
+	//		User:     viper.GetString("db_user"),
+	//		Password: viper.GetString("DB_PWD"),
+	//		Dbname:   viper.GetString("db_name"),
+	//		Port:     viper.GetString("db_port"),
+	//	}
+	fmt.Printf("PG CONFIG: %+v", config)
+
 	return connectDb(config)
 }

@@ -35,7 +35,7 @@ func (r UserRepo) CreateUser(user *models.User) (*models.User, error) {
 func (r UserRepo) GetUserById(id uint) (*models.User, error) {
 	user := &models.User{}
 	user.ID = id
-	err := r.db.Model(user).Preload("Roles").Find(user).Error
+	err := r.db.Model(user).Preload("Roles").Take(user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -72,6 +72,7 @@ func (r UserRepo) AddRoles(user *models.User, roles []string) (*models.User, err
 	}
 	return user, nil
 }
+
 func (r UserRepo) RemoveRoles(user *models.User, roles []string) (*models.User, error) {
 	newRoles := []models.Role{}
 
@@ -92,4 +93,10 @@ func (r UserRepo) RemoveRoles(user *models.User, roles []string) (*models.User, 
 		return nil, err
 	}
 	return user, nil
+}
+
+func (r UserRepo) GetUserByEmail(email string) (*models.User, error) {
+	user := &models.User{}
+	err := r.db.Model(user).Preload("Roles").Take(user, "email = ?", email).Error
+	return user, err
 }

@@ -1,0 +1,15 @@
+{
+	"SRV_PORT": 8888,
+	"STATIC_PATH": "./public/",
+	"ROLES": ["admin", "user", "guest"],
+	"DB_NAME": "blog",
+	"DB_PORT": "5432",
+	"DB_USER": "azeek",
+	"DB_HOST": "",
+	"DB_PWD": "",
+	"SU_FULL_NAME": "Malton (aka Azeek)",
+	"SU_USERNAME": "Azeek",
+	"SU_EMAIL": "pymanuz@gmail.com",
+	"SU_PWD": "",
+	"SU_ROLE": "admin"
+}
