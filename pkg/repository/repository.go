@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/azeek21/blog/models"
 	"gorm.io/driver/postgres"
@@ -14,12 +15,12 @@ type UserRepository interface {
 	GetUserById(id uint) (*models.User, error)
 	UpdateUser(user *models.User) (*models.User, error)
 	DeleteUser(user *models.User) (bool, error)
-	AddRoles(user *models.User, roles []string) (*models.User, error)
-	RemoveRoles(user *models.User, roles []string) (*models.User, error)
+	SetRole(user *models.User, role string) (*models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
 }
 
 type RoleRepository interface {
+	GetRoleByRoleCode(role string) (*models.Role, error)
 	UpdateRole(role *models.Role) (*models.Role, error)
 	GetAllRoles() ([]models.Role, error)
 	DeleteRole(role *models.Role) (bool, error)
@@ -58,14 +59,6 @@ func connectDb(config PostgresConnectionConfig) (*gorm.DB, error) {
 }
 
 func CreateDb(config PostgresConnectionConfig) (*gorm.DB, error) {
-	//	config := PostgresConnectionConfig{
-	//		Host:     viper.GetString("DB_HOST"),
-	//		User:     viper.GetString("db_user"),
-	//		Password: viper.GetString("DB_PWD"),
-	//		Dbname:   viper.GetString("db_name"),
-	//		Port:     viper.GetString("db_port"),
-	//	}
-	fmt.Printf("PG CONFIG: %+v", config)
-
+	log.Printf("User postgres config: %+v", config)
 	return connectDb(config)
 }

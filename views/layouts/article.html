@@ -1,0 +1,19 @@
+{{ block "article_page" .}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {{template "default_head_tags"}}
+  <meta name="description" content="{{.Title}}">
+  <title>Blog</title>
+</head>
+
+<body class="bg-gray-200 color-current flex flex-col gap-4 relative">
+  {{ template "header"}}
+  {{ template "post" . }}
+</body>
+
+{{template "footer"}}
+
+</html>
+{{ end }}

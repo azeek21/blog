@@ -3,20 +3,12 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {{template "default_head_tags"}}
   <meta name="description" content="Askaraliev Abdulaziz's personal blog" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/htmx.org@1.9.12"
-    integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
-    crossorigin="anonymous"></script>
-  <script>
-    tailwind.config = {};
-  </script>
-  <title>Blog</title>
+  <title>Blog - Latests articles</title>
 </head>
 
-<body class="bg-gray-200 color-current w-screen h-screen">
+<body class="bg-gray-200 color-current w-full h-full">
   {{ template "header"}}
   <div id="page-content" class="p-4 w-full h-full">
     <h1 class="text-2xl">Latest articles</h1>
@@ -27,6 +19,7 @@
     </div>
   </div>
 
+  {{template "footer"}}
 </body>
 
 </html>

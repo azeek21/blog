@@ -2,40 +2,38 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/repository"
 	"github.com/azeek21/blog/pkg/utils"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
-func must(x error) {
-	if x != nil {
-		log.Fatalf(x.Error())
-		os.Exit(1)
-	}
-}
-
 func main() {
-	err := utils.InitConfig("dev")
-	must(err)
+	err := utils.InitConfig(gin.Mode())
+	utils.Must(err)
 
 	dbConf := repository.PostgresConnectionConfig{}
 	dbConf, err = utils.LoadConfig(dbConf)
-	must(err)
+	utils.Must(err)
 	db, err := repository.CreateDb(dbConf)
-	must(err)
+	utils.Must(err)
 
 	err = db.AutoMigrate(&models.User{}, &models.Role{}, &models.Article{})
-	must(err)
+	utils.Must(err)
 
 	repo := repository.NewRepositroy(db)
 	roles := viper.GetStringSlice("ROLES")
 	for _, role := range roles {
-		repo.CreateRole(&models.Role{
-			Code: role,
-		})
+		_, err = repo.GetRoleByRoleCode(role)
+		if err == gorm.ErrRecordNotFound {
+			_, err = repo.CreateRole(&models.Role{
+				Code: role,
+			})
+		}
+		utils.Must(err)
 	}
 
 	superUser := &models.User{
@@ -43,13 +41,17 @@ func main() {
 		FullName: viper.GetString("SU_FULL_NAME"),
 		Username: viper.GetString("SU_USERNAME"),
 		Password: viper.GetString("SU_PWD"),
-		Roles:    []models.Role{{Code: viper.GetString("SU_ROLE")}},
+		RoleCode: "admin",
 	}
 
-	_, err = repo.CreateUser(superUser)
-	if err != nil {
-		repo.UpdateUser(superUser)
+	usr, err := repo.GetUserByEmail(superUser.Email)
+	if err == gorm.ErrRecordNotFound {
+		_, err = repo.CreateUser(superUser)
+		utils.Must(err)
+	} else {
+		superUser.Model = usr.Model
+		usr, err = repo.UpdateUser(superUser)
 	}
-
-	log.Printf("Migration SUCCESS\nCreated super user:\nName: %v, Email: %v, Roles: %v\n", superUser.FullName, superUser.Email, superUser.Roles)
+	utils.Must(err)
+	log.Printf("Migration SUCCESS\nSuper user:\nName: %v, Email: %v, Role: %v\n", superUser.FullName, superUser.Email, superUser.RoleCode)
 }

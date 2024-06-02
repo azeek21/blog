@@ -1,7 +1,8 @@
 {{ block "header" . }}
-<header class="w-full border-b border-gray-900 px-4 py-2 flex gap-2 h-min items-center">
+<header
+  class="w-full border-b border-gray-900 px-4 py-2 flex gap-2 h-min items-center sticky top-0 backdrop-filter backdrop-blur-lg">
   <a href="/">
-    <img src="public/logo.png" class="h-[50px] w-auto object-fit" alt="SiteLogo" />
+    <img src="/public/logo.png" class="h-[50px] w-auto object-fit" alt="SiteLogo" />
   </a>
 
   <nav class="ml-auto">
@@ -17,8 +18,8 @@
       </li>
     </ul>
   </nav>
-  <a href="">
-    <img class="w-[30px] rounded-full border border-gray-900" src="public/logo.png" />
+  <a href="/profile">
+    <img class="w-[30px] rounded-full border border-gray-900" src="/public/logo.png" />
   </a>
 </header>
 {{ end }}

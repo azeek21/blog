@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/service"
 	"github.com/gin-gonic/gin"
 )
@@ -19,8 +18,8 @@ func NewHandler(service *service.Service) *Handler {
 	}
 }
 
-func (h Handler) RegisterHandlers(enginge *gin.Engine) error {
-	enginge.Static("public", "./public/")
+func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error {
+	enginge.Static("public", staticPath)
 	count := 0
 
 	api_group := enginge.Group("/api")
@@ -43,28 +42,9 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine) error {
 
 	page_group := enginge.Group("")
 	{
-		page_group.GET("", func(ctx *gin.Context) {
-			posts := []models.Article{
-				{
-					Title:   "title1",
-					Content: "Content1",
-				},
-				{
-					Title:   "title2",
-					Content: "Conten2",
-				},
-				{
-					Title:   "title3",
-					Content: "Content3",
-				},
-			}
-			data := struct {
-				Articles []models.Article
-			}{
-				Articles: posts,
-			}
-			ctx.HTML(http.StatusOK, "index", data)
-		})
+		page_group.GET("/", h.IndexPage)
+		page_group.GET("/login", h.LoginPage)
+		page_group.GET("/articles/:id", h.ArticlePage)
 	}
 
 	// static

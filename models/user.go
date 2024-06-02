@@ -8,6 +8,7 @@ type User struct {
 	Username string `json:"username"`
 	Email    string `gorm:"index;unique" json:"email"`
 	Password string
-	Articles []Article `gorm:"foreignKey:AuthorID"`
-	Roles    []Role    `gorm:"many2many:user_roles;"`
+	Articles []Article `gorm:"foreignKey:AuthorID" json:"articles"`
+	Role     Role      `gorm:"foreignKey:RoleCode;references:Code"`
+	RoleCode string    `json:"role"`
 }
