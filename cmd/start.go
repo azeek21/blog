@@ -1,6 +1,7 @@
 package main
 
 import (
+
 	"github.com/azeek21/blog/pkg/handler"
 	"github.com/azeek21/blog/pkg/repository"
 	"github.com/azeek21/blog/pkg/service"
@@ -31,4 +32,5 @@ func main() {
 	handler := handler.NewHandler(service)
 	handler.RegisterHandlers(engine, viper.GetString("STATIC_PATH"))
 	engine.Run(viper.GetString("SRV_PORT"))
+
 }

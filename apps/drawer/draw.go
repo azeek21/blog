@@ -1,6 +1,7 @@
 package drawer
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
 	"image/png"
