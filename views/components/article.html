@@ -1,4 +1,4 @@
-{{ block "post-preview" . }}
+{{ block "article-preview" . }}
 <a id="post-preview" href="/articles/{{.ID}}" class="flex gap-4 flex-row">
   <div id="post-preview-media" class="w-1/6 min-w-[50px] max-w-[150px]">
     {{ if .ImageUrl }}
@@ -15,7 +15,7 @@
 
 {{ end }}
 
-{{ block "post" . }}
+{{ block "article" . }}
 <div class="flex flex-col content-center px-4 gap-4">
   {{ if .ImageUrl }}
   <img class="max-h-52 h-full aspect-video w-auto object-contain" src="{{.ImageUrl}}" alt="{{ .Title }}" />

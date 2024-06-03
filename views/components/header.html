@@ -6,20 +6,26 @@
   </a>
 
   <nav class="ml-auto">
-    <ul class="flex gap-2 items-center">
+    <ul class="flex gap-4 items-center">
       <li>
-        <a href="#">Latest</a>
+        <a href="/trending" class="hover:border-b border-blue-900 transition p-1">Trending</a>
       </li>
       <li>
-        <a href="#">Categories</a>
+        <a href="/categories" class="hover:border-b border-blue-900 transition p-1">All Categories</a>
       </li>
       <li>
-        <a href="#">Authors</a>
+        <a href="/authors" class="hover:border-b border-blue-900 transition p-1">Authors</a>
       </li>
     </ul>
   </nav>
+  {{if .User}}
+  <a href="/new-article" class="border rounded-lg border-gray-900 py-1 px-2">New Post +</a>
   <a href="/profile">
-    <img class="w-[30px] rounded-full border border-gray-900" src="/public/logo.png" />
+    <img class="w-[30px] rounded-full border border-gray-900" src="{{.User.ImageUrl}}" />
   </a>
+  {{else}}
+  <a href="/signin" class="border rounded-lg border-gray-900 py-1 px-2">Sign In</a>
+  {{end}}
+
 </header>
 {{ end }}
