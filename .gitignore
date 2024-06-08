@@ -18,3 +18,9 @@ go.work.sum
 bin
 */**/bin/
 bin/*
+
+
+# generated templ files
+*/**/*_templ.go
+**/*_templ.go
+./views/**/*_templ.go

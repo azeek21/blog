@@ -1,0 +1,30 @@
+package components
+
+import "github.com/azeek21/blog/models"
+import "fmt"
+
+templ ArticlePreview(article models.Article) {
+	<a id="post-preview" href={ templ.URL(fmt.Sprintf("/articles/%v", article.ID)) } class="flex gap-4 flex-row">
+		<div id="post-preview-media" class="w-1/6 min-w-[50px] max-w-[150px]">
+			if len(*article.ImageUrl) > 0 {
+				<img class="w-full aspect-square" src="{{.ImageUrl}}"/>
+			} else {
+				<img class="w-full aspect-square" src="/public/logo.png"/>
+			}
+		</div>
+		<div id="post-preview-meta">
+			<h1 id="post-review-title" class="text-xl">{ article.Title }</h1>
+			<p id="post-preview-content" class="text-sm clam-">{ article.Content }</p>
+		</div>
+	</a>
+}
+
+templ Article(article models.Article) {
+	<div class="flex flex-col content-center px-4 gap-4">
+		if len(*article.ImageUrl) > 0 {
+			<img class="max-h-52 h-full aspect-video w-auto object-contain" src="{{.ImageUrl}}" alt="{{ .Title }}"/>
+		}
+		<h1 id="post-title" class="text-4xl">{ article.Title }</h1>
+		<p id="post-content" class="text-base">{ article.Content }</p>
+	</div>
+}

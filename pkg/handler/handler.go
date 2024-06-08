@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/azeek21/blog/models"
+	"github.com/a-h/templ"
+	"github.com/azeek21/blog/pkg/middleware"
 	"github.com/azeek21/blog/pkg/service"
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,11 @@ func NewHandler(service *service.Service) *Handler {
 	return &Handler{
 		service: service,
 	}
+}
+
+func Render(c *gin.Context, status int, template templ.Component) error {
+	c.Status(status)
+	return template.Render(c, c.Writer)
 }
 
 func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error {
@@ -34,26 +40,16 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 			articles.DELETE("/:id", h.DeleteArticle)
 		}
 
-		api_group.GET("/count", func(ctx *gin.Context) {
+		api_group.GET("/count", middleware.AuthMiddleware(h.service, "asdfasdf"), func(ctx *gin.Context) {
 			count++
 			ctx.HTML(http.StatusOK, "count", fmt.Sprintf("%v", count))
 		})
 
 		auth_grup := api_group.Group("/auth")
 		{
-			auth_grup.POST("/signin", func(ctx *gin.Context) {
-				creds := models.SignInDTO{}
-				err := ctx.ShouldBind(&creds)
-				if err != nil {
-					ctx.String(400, "Bad request")
-					ctx.Abort()
-					return
-				}
-				ctx.Header("HX-Redirect", "/")
-				ctx.String(200, "/")
-			})
-			auth_grup.POST("/sign-out")
-			auth_grup.POST("/update-user")
+			auth_grup.POST("/sign-in", h.SignIn)
+			auth_grup.POST("/sign-up", h.SignIn)
+			auth_grup.POST("/sign-out", h.SignOut)
 		}
 
 	}
@@ -61,10 +57,9 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 	page_group := enginge.Group("")
 	{
 		page_group.GET("/", h.IndexPage)
-		page_group.GET("/signin", h.LoginPage)
-		page_group.GET("/articles/:id", h.ArticlePage)
+		page_group.GET("/sign-in", h.SignInPage)
+		page_group.GET("/articles/:id", h.ArticleByIdPage)
 	}
 
-	// static
 	return nil
 }

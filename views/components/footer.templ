@@ -1,0 +1,16 @@
+package components
+
+templ Footer(visitCount uint64) {
+	<footer class="p-2 flex items-center justify-center w-full text-sm flex-col gap-2 border-t mt-auto border-gray-900">
+		<p>
+			Made by
+			<a class="text-xl text-blue-800" href="https://askaraliev.uz" target="_blank">Azeek</a>
+			with 
+			<span class="text-xl">
+				&lt;3
+			</span> using Golang, HTMX, Tailwind
+		</p>
+		<p>CI/CD setup by <a class="text-xl text-blue-800" href="https://askaraliev.uz" target="_blank">Me </a> </p>
+		<p>Views: { string(visitCount) }</p>
+	</footer>
+}

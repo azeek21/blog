@@ -1,0 +1,22 @@
+package layouts
+
+import (
+	"github.com/azeek21/blog/models"
+	"github.com/azeek21/blog/views/components"
+)
+
+templ ArticleByIdPage(article models.Article) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			@components.DefaultHead(article.Title, article.Title)
+			<meta name="description" content="content"/>
+			<title>Blog</title>
+		</head>
+		<body class="bg-gray-200 color-current flex flex-col gap-4 relative">
+			@components.Header()
+			@components.Article(article)
+		</body>
+		@components.Footer(3)
+	</html>
+}
