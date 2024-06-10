@@ -12,7 +12,7 @@ migrate: build
 
 #  || xargs go build -ldflags "-s -w" -o ./* 
 
-dev: generate_views build 
+dev: generate 
 	./bin/start
 
 dev_prepare: build generate migrate

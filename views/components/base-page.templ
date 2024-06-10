@@ -1,0 +1,15 @@
+package components
+
+templ BasePage(title, description string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			@DefaultHead(title, description)
+		</head>
+		<body class="bg-gray-900 border-gray-600 text-gray-200 flex flex-col gap-4 relative min-w-[280px]">
+			@Header()
+			{ children... }
+			@Footer()
+		</body>
+	</html>
+}

@@ -1,0 +1,16 @@
+package components
+
+templ ArticleForm() {
+	<div id="article-form" class="max-w-screen-xl w-full border rounded-lg m-auto p-4 min-w-[250px]">
+		<div class="w-full border-b flex mb-8">
+			<button type="button" class="w-full h-full flex items-center justify-center py-1 bg-blue-950 text-blue-100 rounded-t-lg">Edit</button>
+			<button type="button" class="w-full h-full flex items-center justify-center">Preview</button>
+		</div>
+		<form hx-post="/api/articles/" hx-trigger="submit" hx-indicator="#article-form" class="flex flex-col gap-4 w-full">
+			@FormField("Image", "text", "text", "External image url or link to an image")
+			@FormField("Title", "title", "text", "Some clickbait title LoL")
+			<textarea class="p-4 border rounded-lg bg-inherit" placeholder="Once upon a time, there was a lazy programmer..." rows="20"></textarea>
+			<button type="submit" class="submit border rounded-lg py-1">Save</button>
+		</form>
+	</div>
+}

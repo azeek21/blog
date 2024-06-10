@@ -1,0 +1,12 @@
+package components
+
+templ SignUpForm() {
+	@AuthFormBase("/auth/sign-up") {
+		@FormField("Username", "username", "text", "walking-worm")
+		@FormField("Email", "email", "email", "walking-worm@gmail.com")
+		@FormField("Password", "password", "password", "***")
+		@FormField("Repeat password", "re-password", "password", "***")
+		<button type="submit" class="submit border rounded-lg py-1">Sign In</button>
+		<div class="text-sm pt-8">Already have an account ? - <a href="/sign-in" class="text-blue-500">Sign in</a></div>
+	}
+}

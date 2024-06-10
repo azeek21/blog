@@ -10,13 +10,11 @@ templ ArticleByIdPage(article models.Article) {
 	<html lang="en">
 		<head>
 			@components.DefaultHead(article.Title, article.Title)
-			<meta name="description" content="content"/>
-			<title>Blog</title>
 		</head>
 		<body class="bg-gray-200 color-current flex flex-col gap-4 relative">
 			@components.Header()
 			@components.Article(article)
 		</body>
-		@components.Footer(3)
+		@components.Footer()
 	</html>
 }

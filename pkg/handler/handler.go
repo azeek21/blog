@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/a-h/templ"
 	"github.com/azeek21/blog/pkg/middleware"
 	"github.com/azeek21/blog/pkg/service"
 	"github.com/gin-gonic/gin"
@@ -18,11 +17,6 @@ func NewHandler(service *service.Service) *Handler {
 	return &Handler{
 		service: service,
 	}
-}
-
-func Render(c *gin.Context, status int, template templ.Component) error {
-	c.Status(status)
-	return template.Render(c, c.Writer)
 }
 
 func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error {
@@ -58,6 +52,8 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 	{
 		page_group.GET("/", h.IndexPage)
 		page_group.GET("/sign-in", h.SignInPage)
+		page_group.GET("/sign-up", h.SignUpPage)
+		page_group.GET("/articles/new", h.NewArticlePage)
 		page_group.GET("/articles/:id", h.ArticleByIdPage)
 	}
 

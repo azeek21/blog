@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/azeek21/blog/pkg/utils"
 	"github.com/azeek21/blog/views/layouts"
 	"github.com/gin-gonic/gin"
 )
@@ -29,5 +30,5 @@ func (h Handler) IndexPage(ctx *gin.Context) {
 	//	}{
 	//		Articles: posts,
 	//	}
-	Render(ctx, 200, layouts.IndexPage())
+	utils.RenderTempl(ctx, 200, layouts.IndexPage())
 }

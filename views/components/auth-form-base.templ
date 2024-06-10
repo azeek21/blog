@@ -1,0 +1,15 @@
+package components
+
+templ AuthFormBase(postUrl string) {
+	<div class="max-w-screen-sm w-1/3 border rounded-lg m-auto p-4 min-w-[250px]">
+		<form
+			id="auth-form"
+			hx-post={ postUrl }
+			hx-trigger="submit"
+			hx-indicator="#auth-form"
+			class="flex flex-col gap-4"
+		>
+			{ children... }
+		</form>
+	</div>
+}

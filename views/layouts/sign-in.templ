@@ -3,15 +3,7 @@ package layouts
 import "github.com/azeek21/blog/views/components"
 
 templ SignInPage() {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			@components.DefaultHead("Blog - sign up", "Sign Up to start enjoying a huge amount of articles and publish your amazing work")
-		</head>
-		<body class="bg-gray-200 border-gray-900 color-current flex flex-col gap-4 relative min-w-[280px]">
-			@components.Header()
-			@components.SignInForm()
-			@components.Footer(1)
-		</body>
-	</html>
+	@components.BasePage("Blog - sign up", "Sign Up to start enjoying a huge amount of articles and publish your amazing work") {
+		@components.SignInForm()
+	}
 }

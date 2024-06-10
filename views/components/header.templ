@@ -3,15 +3,15 @@ package components
 import "github.com/azeek21/blog/models"
 
 templ userProfilePic(user models.User) {
-	<a href="/new-article" class="border rounded-lg border-gray-900 py-1 px-2">New Post +</a>
+	<a href="/new-article" class="border rounded-lg py-1 px-2">New Post +</a>
 	<a href="/profile">
-		<img class="w-[30px] rounded-full border border-gray-900" src={ *user.ImageUrl }/>
+		<img class="w-[30px] rounded-full border" src={ *user.ImageUrl }/>
 	</a>
 }
 
 templ Header() {
 	<header
-		class="w-full border-b border-gray-900 px-4 py-2 flex gap-2 h-min items-center sticky top-0 backdrop-filter backdrop-blur-lg"
+		class="w-full border-b border-inherit px-4 py-2 flex gap-2 h-min items-center sticky top-0 backdrop-filter backdrop-blur-lg"
 	>
 		<a href="/">
 			<img src="/public/logo.png" class="h-[50px] w-auto object-fit" alt="SiteLogo"/>
@@ -19,20 +19,20 @@ templ Header() {
 		<nav class="ml-auto">
 			<ul class="flex gap-4 items-center">
 				<li>
-					<a href="/trending" class="hover:border-b border-blue-900 transition p-1">Trending</a>
+					<a href="/trending" class="hover:border-b border-blue-300 transition p-1">Trending</a>
 				</li>
 				<li>
-					<a href="/categories" class="hover:border-b border-blue-900 transition p-1">All Categories</a>
+					<a href="/categories" class="hover:border-b border-blue-300 transition p-1">All Categories</a>
 				</li>
 				<li>
-					<a href="/authors" class="hover:border-b border-blue-900 transition p-1">Authors</a>
+					<a href="/authors" class="hover:border-b border-blue-300 transition p-1">Authors</a>
 				</li>
 			</ul>
 		</nav>
 		if ctx.Value(models.AUTHED_NAME) != nil {
 			@userProfilePic(ctx.Value(models.AUTHED_NAME).(models.User))
 		} else {
-			<a href="/sign-in" class="border rounded-lg border-gray-900 py-1 px-2">Sign In</a>
+			<a href="/sign-in" class="border-inherit border rounded-lg py-1 px-2">Sign in</a>
 		}
 	</header>
 }
