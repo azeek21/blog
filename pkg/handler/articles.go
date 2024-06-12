@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/utils"
+	"github.com/azeek21/blog/views/components"
 	"github.com/azeek21/blog/views/layouts"
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +34,9 @@ func (h Handler) GetArticleById(ctx *gin.Context) {
 }
 
 func (h Handler) CreateArticle(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"Status": "Ok"})
+	content := ctx.Request.FormValue("content")
+	log.Printf("CONTENT: %v\n", content)
+	utils.RenderTempl(ctx, 200, components.MarkdownEditor(content, content, true))
 }
 
 func (h Handler) UpdateArticle(ctx *gin.Context) {

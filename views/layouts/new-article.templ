@@ -4,6 +4,6 @@ import "github.com/azeek21/blog/views/components"
 
 templ NewArticlePage() {
 	@components.BasePage("New article", "Create and share articles from markdown") {
-		@components.ArticleForm()
+		@components.ArticleForm("", "", "", "", false)
 	}
 }

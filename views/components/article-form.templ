@@ -1,16 +1,44 @@
 package components
 
-templ ArticleForm() {
-	<div id="article-form" class="max-w-screen-xl w-full border rounded-lg m-auto p-4 min-w-[250px]">
-		<div class="w-full border-b flex mb-8">
-			<button type="button" class="w-full h-full flex items-center justify-center py-1 bg-blue-950 text-blue-100 rounded-t-lg">Edit</button>
-			<button type="button" class="w-full h-full flex items-center justify-center">Preview</button>
+import "fmt"
+
+func getTextAreaStyles(visible bool) string {
+	base := "bg-inherit p-4 min-h-16 text-sm"
+	if !visible {
+		base += " hidden"
+	}
+	return base
+}
+
+func getTabButtonClass(active bool) string {
+	base := "w-full h-full flex items-center justify-center py-1"
+	if active {
+		base += " bg-blue-950 text-blue-100"
+	}
+	return base
+}
+
+templ MarkdownEditor(content string, preview string, showPreview bool) {
+	<div id="markdown-editor" class="border-inherit border rounded-lg flex flex-col overflow-hidden focus-within:border-blue-200">
+		<div class="w-full border-b border-inherit flex">
+			<button hx-post="/api/markdown/show-edit" hx-include="#content" hx-swap="outerHTML" hx-target="#markdown-editor" type="button" class={ getTabButtonClass(!showPreview) }>Edit</button>
+			<button hx-post="/api/markdown/show-preview" hx-include="#content" hx-swap="outerHTML" hx-target="#markdown-editor" type="button" class={ getTabButtonClass(showPreview) }>Preview</button>
 		</div>
-		<form hx-post="/api/articles/" hx-trigger="submit" hx-indicator="#article-form" class="flex flex-col gap-4 w-full">
+		<textarea id="content" name="content" rows="8" class={ getTextAreaStyles(!showPreview) } placeholder="Once upon a time, there was a lazy programmer...">
+			{ content }
+		</textarea>
+		@MarkdownView(content, showPreview)
+	</div>
+}
+
+templ ArticleForm(articleId, image, title, content string, showPreview bool) {
+	<div id="article-form" class="max-w-screen-lg border border-inherit rounded-lg m-auto p-4 min-w-[250px]">
+		<form hx-post={ templ.EscapeString(fmt.Sprintf("/api/articles/%v", articleId)) } hx-trigger="submit" hx-target="#result" hx-indicator="#article-form" class="flex flex-col gap-4 w-full border-inherit">
+			<h1 class="text-3xl">Create new article</h1>
 			@FormField("Image", "text", "text", "External image url or link to an image")
 			@FormField("Title", "title", "text", "Some clickbait title LoL")
-			<textarea class="p-4 border rounded-lg bg-inherit" placeholder="Once upon a time, there was a lazy programmer..." rows="20"></textarea>
-			<button type="submit" class="submit border rounded-lg py-1">Save</button>
+			@MarkdownEditor(content, content, showPreview)
+			<button type="submit" class="submit border border-inherit rounded-lg py-1">Save</button>
 		</form>
 	</div>
 }

@@ -1,7 +1,7 @@
 package components
 
 templ FormField(label, name, inputType, placeholder string) {
-	<label class="flex-col flex" for={ name }>
-		{ label }: <input id={ name } class="border rounded-lg px-2 py-1" type={ inputType } name={ name } placeholder={ placeholder }/>
+	<label class="flex-col flex border-inherit" for={ name }>
+		{ label }: <input id={ name } class="border border-inherit focus:border-blue-200 rounded-lg px-2 py-1 text-base" type={ inputType } name={ name } placeholder={ placeholder }/>
 	</label>
 }

@@ -6,3 +6,7 @@ body {
 input {
 	background: inherit;
 }
+
+#md-view * {
+	all: revert !important;
+}

@@ -46,6 +46,12 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 			auth_grup.POST("/sign-out", h.SignOut)
 		}
 
+		markdown_group := api_group.Group("/markdown")
+		{
+			markdown_group.POST("/show-preview", h.ShowMarkdownPreview)
+			markdown_group.POST("/show-edit", h.ShowMarkdownEditor)
+		}
+
 	}
 
 	page_group := enginge.Group("")

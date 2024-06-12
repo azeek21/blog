@@ -13,15 +13,16 @@ func RenderTempl(c *gin.Context, status int, template templ.Component) error {
 	return template.Render(c, c.Writer)
 }
 
-func RenderMdToHTML(md []byte) []byte {
+func RenderMdToHTML(input string) templ.Component {
 	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
 	p := parser.NewWithExtensions(extensions)
-	doc := p.Parse(md)
+	doc := p.Parse([]byte(input))
 
 	// create HTML renderer with extensions
 	htmlFlags := html.CommonFlags | html.HrefTargetBlank
 	opts := html.RendererOptions{Flags: htmlFlags}
 	renderer := html.NewRenderer(opts)
 
-	return markdown.Render(doc, renderer)
+	res := markdown.Render(doc, renderer)
+	return templ.Raw(string(res), nil)
 }
