@@ -6,15 +6,7 @@ import (
 )
 
 templ ArticleByIdPage(article models.Article) {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			@components.DefaultHead(article.Title, article.Title)
-		</head>
-		<body class="bg-gray-200 color-current flex flex-col gap-4 relative">
-			@components.Header()
-			@components.Article(article)
-		</body>
-		@components.Footer()
-	</html>
+	@components.BasePage(article.Title, article.Content) {
+		@components.Article(article)
+	}
 }

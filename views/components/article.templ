@@ -20,11 +20,13 @@ templ ArticlePreview(article models.Article) {
 }
 
 templ Article(article models.Article) {
-	<div class="flex flex-col content-center px-4 gap-4">
+	<div class="flex flex-col content-center px-4 gap-4 max-w-screen-lg mx-auto">
 		if len(*article.ImageUrl) > 0 {
-			<img class="max-h-52 h-full aspect-video w-auto object-contain" src="{{.ImageUrl}}" alt="{{ .Title }}"/>
+			<img class="max-h-52 h-full aspect-video w-auto object-contain" src={ *article.ImageUrl } alt={ article.Title }/>
 		}
-		<h1 id="post-title" class="text-4xl">{ article.Title }</h1>
-		<p id="post-content" class="text-base">{ article.Content }</p>
+		<h1 id="post-title" class="text-4xl border-b border-blue-300 pb-4">{ article.Title }</h1>
+		<p id="post-content" class="text-base">
+			@MarkdownView(article.Content, true)
+		</p>
 	</div>
 }

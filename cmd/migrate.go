@@ -52,6 +52,7 @@ func main() {
 		superUser.Model = usr.Model
 		usr, err = repo.UpdateUser(superUser)
 	}
+
 	utils.Must(err)
 	log.Printf("Migration SUCCESS\nSuper user:\nName: %v, Email: %v, Role: %v\n", superUser.FullName, superUser.Email, superUser.RoleCode)
 }

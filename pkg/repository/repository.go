@@ -28,6 +28,10 @@ type RoleRepository interface {
 }
 
 type ArticleRepository interface {
+	GetArticleById(articleId uint) (*models.Article, error)
+	CreateArticle(*models.Article) (*models.Article, error)
+	Update(*models.Article) (*models.Article, error)
+	Delete(*models.Article) (bool, error)
 }
 
 type Repository struct {
@@ -38,8 +42,9 @@ type Repository struct {
 
 func NewRepositroy(db *gorm.DB) *Repository {
 	return &Repository{
-		UserRepository: NewUserRepository(db),
-		RoleRepository: NewRolesRepository(db),
+		UserRepository:    NewUserRepository(db),
+		RoleRepository:    NewRolesRepository(db),
+		ArticleRepository: NewArticleRepositroy(db),
 	}
 }
 

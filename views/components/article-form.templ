@@ -33,9 +33,9 @@ templ MarkdownEditor(content string, preview string, showPreview bool) {
 
 templ ArticleForm(articleId, image, title, content string, showPreview bool) {
 	<div id="article-form" class="max-w-screen-lg border border-inherit rounded-lg m-auto p-4 min-w-[250px]">
-		<form hx-post={ templ.EscapeString(fmt.Sprintf("/api/articles/%v", articleId)) } hx-trigger="submit" hx-target="#result" hx-indicator="#article-form" class="flex flex-col gap-4 w-full border-inherit">
+		<form hx-post={ templ.EscapeString(fmt.Sprintf("/api/articles/%v", articleId)) } hx-trigger="submit" hx-indicator="#article-form" class="flex flex-col gap-4 w-full border-inherit">
 			<h1 class="text-3xl">Create new article</h1>
-			@FormField("Image", "text", "text", "External image url or link to an image")
+			@FormField("Image", "image", "text", "External image url or link to an image")
 			@FormField("Title", "title", "text", "Some clickbait title LoL")
 			@MarkdownEditor(content, content, showPreview)
 			<button type="submit" class="submit border border-inherit rounded-lg py-1">Save</button>
