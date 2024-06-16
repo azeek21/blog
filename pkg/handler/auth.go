@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/utils"
+	"github.com/azeek21/blog/views/components"
 	"github.com/azeek21/blog/views/layouts"
 	"github.com/gin-gonic/gin"
 )
@@ -23,12 +24,23 @@ func (h Handler) SignIn(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	ctx.Header("HX-Redirect", "/")
-	ctx.String(200, "/")
-
 }
 
 func (h Handler) SignUp(ctx *gin.Context) {
+	var creds models.SignUpDTO
+	err := ctx.ShouldBind(&creds)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+	if creds.Password != creds.PasswordRepeat {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, "Password and it's repeat should match"))
+		ctx.Abort()
+		return
+	}
+	// TODO implement signin jwt
+	utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.SUCCESS, "Sign Up success. You'll be redirected to main page soon..."))
 }
 
 func (h Handler) SignOut(ctx *gin.Context) {}

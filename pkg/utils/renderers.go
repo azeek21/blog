@@ -9,7 +9,6 @@ import (
 )
 
 func RenderTempl(c *gin.Context, status int, template templ.Component) error {
-	c.Status(status)
 	return template.Render(c, c.Writer)
 }
 

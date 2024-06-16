@@ -12,6 +12,8 @@ templ BasePage(title, description string) {
 				{ children... }
 			</div>
 			@Footer()
+			<div id="alerts" hx-swap-oob="beforeend" class="fixed bottom-4 right-4 min-w-[250px] w-1/12 h-auto flex flex-col gap-2 z-10"></div>
+			<script defer src="/public/index.js" type="text/javascript"></script>
 		</body>
 	</html>
 }

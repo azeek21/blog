@@ -1,9 +1,6 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/azeek21/blog/pkg/middleware"
 	"github.com/azeek21/blog/pkg/service"
 	"github.com/gin-gonic/gin"
@@ -21,7 +18,6 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error {
 	enginge.Static("public", staticPath)
-	count := 0
 
 	api_group := enginge.Group("/api")
 	{
@@ -34,15 +30,10 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 			articles.DELETE("/:id", h.DeleteArticle)
 		}
 
-		api_group.GET("/count", middleware.AuthMiddleware(h.service, "asdfasdf"), func(ctx *gin.Context) {
-			count++
-			ctx.HTML(http.StatusOK, "count", fmt.Sprintf("%v", count))
-		})
-
 		auth_grup := api_group.Group("/auth")
 		{
 			auth_grup.POST("/sign-in", h.SignIn)
-			auth_grup.POST("/sign-up", h.SignIn)
+			auth_grup.POST("/sign-up", h.SignUp)
 			auth_grup.POST("/sign-out", h.SignOut)
 		}
 
@@ -56,7 +47,7 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 
 	page_group := enginge.Group("")
 	{
-		page_group.GET("/", h.IndexPage)
+		page_group.GET("/", middleware.NewPagingMiddleware(), h.IndexPage)
 		page_group.GET("/sign-in", h.SignInPage)
 		page_group.GET("/sign-up", h.SignUpPage)
 		page_group.GET("/articles/new", h.NewArticlePage)
