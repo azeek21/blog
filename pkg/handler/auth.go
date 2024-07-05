@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/utils"
 	"github.com/azeek21/blog/views/components"
@@ -20,7 +22,7 @@ func (h Handler) SignIn(ctx *gin.Context) {
 	creds := models.SignInDTO{}
 	err := ctx.ShouldBind(&creds)
 	if err != nil {
-		ctx.String(400, "Bad request")
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
 		ctx.Abort()
 		return
 	}
@@ -39,7 +41,29 @@ func (h Handler) SignUp(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	// TODO implement signin jwt
+	user, err := h.service.CreateUser(&models.User{
+		Password: creds.Password,
+		Email:    creds.Email,
+		FullName: creds.Name,
+		Username: creds.Username,
+		RoleCode: "user",
+	})
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+	token, err := h.service.CreateJwt(user)
+
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	fmt.Println("TOKEN: ", token)
+	//origin := ctx.Request.Header.Get("Origin")
+	//ctx.SetCookie("Authentication", token, int((time.Hour * 720).Seconds()), "/", origin, false, true)
 	utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.SUCCESS, "Sign Up success. You'll be redirected to main page soon..."))
 }
 

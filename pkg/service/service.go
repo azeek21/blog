@@ -21,14 +21,23 @@ type ArticleService interface {
 	UpdateArticle(article *models.Article) (*models.Article, error)
 	DeleteArticle(article *models.Article) (bool, error)
 }
+
+type JwtService interface {
+	CreateJwt(creds *models.User) (string, error)
+	// returns user id and err
+	VerifyJwt(token string) (uint, error)
+}
+
 type Service struct {
 	UserService
 	ArticleService
+	JwtService
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
 		UserService:    NewUserService(repo.UserRepository),
 		ArticleService: newArticleService(repo.ArticleRepository),
+		JwtService:     NewJwtSerice(),
 	}
 }

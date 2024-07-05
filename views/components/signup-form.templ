@@ -2,6 +2,7 @@ package components
 
 templ SignUpForm() {
 	@AuthFormBase("/api/auth/sign-up") {
+		@FormField("Name", "name", "text", "The Great Walking Worm the 3rd")
 		@FormField("Username", "username", "text", "walking-worm")
 		@FormField("Email", "email", "email", "walking-worm@gmail.com")
 		@FormField("Password", "password", "password", "***")

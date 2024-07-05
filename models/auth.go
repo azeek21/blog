@@ -9,6 +9,7 @@ type SignInDTO struct {
 }
 
 type SignUpDTO struct {
+	Name           string `form:"name"`
 	Username       string `form:"username" binding:"required"`
 	Password       string `form:"password" binding:"required"`
 	Email          string `form:"email" binding:"required"`

@@ -32,6 +32,7 @@ func main() {
 			_, err = repo.CreateRole(&models.Role{
 				Code: role,
 			})
+			utils.Must(err)
 		}
 		utils.Must(err)
 	}
