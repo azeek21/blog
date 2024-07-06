@@ -28,16 +28,23 @@ type JwtService interface {
 	VerifyJwt(token string) (uint, error)
 }
 
+type PasswordService interface {
+	CreateHash(pwd string) (string, error)
+	VerifyPasswordAgainstHash(pwd string, hash string) (bool, error)
+}
+
 type Service struct {
 	UserService
 	ArticleService
 	JwtService
+	PasswordService
 }
 
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		UserService:    NewUserService(repo.UserRepository),
-		ArticleService: newArticleService(repo.ArticleRepository),
-		JwtService:     NewJwtSerice(),
+		UserService:     NewUserService(repo.UserRepository),
+		ArticleService:  newArticleService(repo.ArticleRepository),
+		JwtService:      NewJwtSerice(),
+		PasswordService: NewPasswordSerice(),
 	}
 }

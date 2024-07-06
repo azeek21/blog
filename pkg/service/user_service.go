@@ -26,14 +26,14 @@ func (s userService) GetUserById(id uint) (*models.User, error) {
 	return s.repo.GetUserById(id)
 }
 func (s userService) UpdateUser(user *models.User) (*models.User, error) {
-	return s.UpdateUser(user)
+	return s.repo.UpdateUser(user)
 }
 func (s userService) DeleteUser(user *models.User) (bool, error) {
-	return s.DeleteUser(user)
+	return s.repo.DeleteUser(user)
 }
 func (s userService) SetRole(user *models.User, role string) (*models.User, error) {
-	return s.SetRole(user, role)
+	return s.repo.SetRole(user, role)
 }
 func (s userService) GetUserByEmail(email string) (*models.User, error) {
-	return s.GetUserByEmail(email)
+	return s.repo.GetUserByEmail(email)
 }

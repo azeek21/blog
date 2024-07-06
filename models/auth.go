@@ -1,6 +1,7 @@
 package models
 
-const AUTHED_NAME = "authed"
+const AUTH_MODEL_NAME = "authed"
+const AUTH_COOKIE_NAME = "Authentication"
 const PASSWORD_REGEX = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
 
 type SignInDTO struct {

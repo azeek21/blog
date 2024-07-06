@@ -7,7 +7,7 @@ tmp_dir = "tmp"
   bin = "./bin/start"
   cmd = "make generate"
   delay = 500
-  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "bin"]
   exclude_file = []
   exclude_regex = ["_test.go", "_templ.go"]
   exclude_unchanged = false
@@ -41,9 +41,9 @@ tmp_dir = "tmp"
   clean_on_exit = false
 
 [proxy]
-  app_port = 8888
+  app_port = 3100
   enabled = true
-  proxy_port = 8080
+  proxy_port = 3101
 
 [screen]
   clear_on_rebuild = true

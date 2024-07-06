@@ -1,11 +1,21 @@
 package components
 
 import "github.com/azeek21/blog/models"
+import "github.com/azeek21/blog/pkg/utils"
 
-templ userProfilePic(user models.User) {
-	<a href="/new-article" class="border rounded-lg py-1 px-2">New Post +</a>
+func getUserProfileImgUrl(user *models.User) string {
+	if user.ImageUrl != nil {
+		return *user.ImageUrl
+	}
+	return "/public/logo.png"
+}
+
+templ userProfilePic() {
+	<a href="/articles/new" class="border rounded-lg py-1 px-2">New Post +</a>
 	<a href="/profile">
-		<img class="w-[30px] rounded-full border" src={ *user.ImageUrl }/>
+		if user, err := (utils.GetUser(ctx)); err == nil {
+			<img class="w-[30px] rounded-full border" src={ getUserProfileImgUrl(user) }/>
+		}
 	</a>
 }
 
@@ -29,8 +39,8 @@ templ Header() {
 				</li>
 			</ul>
 		</nav>
-		if ctx.Value(models.AUTHED_NAME) != nil {
-			@userProfilePic(ctx.Value(models.AUTHED_NAME).(models.User))
+		if utils.IsAuthed(ctx) {
+			@userProfilePic()
 		} else {
 			<a href="/sign-in" class="border-inherit border rounded-lg py-1 px-2">Sign in</a>
 		}

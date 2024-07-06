@@ -21,13 +21,16 @@ func main() {
 	db, err := repository.CreateDb(dbConf)
 	utils.Must(err)
 
+	err = db.Migrator().DropTable(&models.User{}, &models.Role{}, &models.Article{})
+	utils.Must(err)
 	err = db.AutoMigrate(&models.User{}, &models.Role{}, &models.Article{})
 	utils.Must(err)
 
 	repo := repository.NewRepositroy(db)
 	roles := viper.GetStringSlice("ROLES")
+	log.Println("ROLES: ", roles)
 	for _, role := range roles {
-		_, err = repo.GetRoleByRoleCode(role)
+		_, err := repo.GetRoleByRoleCode(role)
 		if err == gorm.ErrRecordNotFound {
 			_, err = repo.CreateRole(&models.Role{
 				Code: role,

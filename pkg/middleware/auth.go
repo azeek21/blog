@@ -1,57 +1,59 @@
 package middleware
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/service"
+	"github.com/azeek21/blog/pkg/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 )
 
-const AUTH_SLUG = "blog-session"
+func isAborted(c *gin.Context, err error, strict bool) bool {
+	if err != nil && strict {
+		c.String(http.StatusUnauthorized, "unauthorized")
+		c.Abort()
+		return true
+	}
+	return false
+}
 
-func AuthMiddleware(userService service.UserService, secret string) gin.HandlerFunc {
+// strict: true, every unauthed request will get 401
+// strict: false, requests still pass, but when they are authenticated, a user will be attached to context
+// TODO: refactor dependency injection
+func AuthMiddleware(userService service.UserService, jwtService service.JwtService, secret string, strict bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tokenCookie, err := c.Request.Cookie(AUTH_SLUG)
+		// we do this so if middleware is called inside nested routes, will will not verify and get the user multiple times
+		if utils.IsAuthed(c) {
+			c.Next()
+			return
+		}
+		tokenCookie, err := c.Request.Cookie(models.AUTH_COOKIE_NAME)
+		if isAborted(c, err, strict) {
+			return
+		}
 		if err != nil {
-			c.String(http.StatusUnauthorized, "unauthorized")
-			c.Abort()
+			c.Next()
 			return
 		}
 
 		token := tokenCookie.Value
-		jwtParsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-			_, ok := token.Method.(*jwt.SigningMethodHMAC)
-			if !ok {
-				return nil, errors.New("unauthorized")
-			}
-			return []byte(secret), nil
-		}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
-		if err != nil || !jwtParsed.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			c.Abort()
+
+		user_id, err := jwtService.VerifyJwt(token)
+		if isAborted(c, err, strict) {
+			return
+		}
+		user, err := userService.GetUserById(uint(user_id))
+		if isAborted(c, err, strict) {
 			return
 		}
 
-		claims, ok := jwtParsed.Claims.(jwt.MapClaims)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			c.Abort()
-			return
-		}
-		user, err := userService.GetUserById(claims["sub"].(uint))
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-			c.Abort()
-			return
-		}
 		c.Set(models.USER_MODEL_NAME, user)
 		c.Next()
 	}
 }
 
+// TODO: finish this up. maybe integrate into auth middleware
 func RoleMiddleware(allowRole string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if _user, ok := c.Get(models.USER_MODEL_NAME); ok {

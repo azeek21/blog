@@ -16,10 +16,8 @@ func NewRolesRepository(db *gorm.DB) RolesRopo {
 }
 
 func (r RolesRopo) GetRoleByRoleCode(role string) (*models.Role, error) {
-	res := &models.Role{
-		Code: role,
-	}
-	err := r.db.First(res).Error
+	res := &models.Role{}
+	err := r.db.Take(res, "code = ?", role).Error
 	return res, err
 }
 

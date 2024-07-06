@@ -1,5 +1,5 @@
 {
-	"SRV_PORT": ":8888",
+	"SRV_PORT": ":3000",
 	"STATIC_PATH": "./public/",
 	"VIEWS_PATH": "./views/**/*",
 	"ROLES": ["admin", "user", "guest"],
