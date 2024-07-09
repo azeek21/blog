@@ -2,7 +2,7 @@ package components
 
 templ SignInForm() {
 	@AuthFormBase("/api/auth/sign-in") {
-		@FormField("Username", "username", "text", "YourUniqueUsername")
+		@FormField("Email", "email", "text", "user@example.com")
 		@FormField("Password", "password", "password", "***")
 		<button type="submit" class="submit border rounded-lg py-1">Sign In</button>
 		<div class="text-sm pt-8">Don't have an account ? - <a href="/sign-up" class="text-blue-500">Sign up</a></div>

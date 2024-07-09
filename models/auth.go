@@ -5,7 +5,7 @@ const AUTH_COOKIE_NAME = "Authentication"
 const PASSWORD_REGEX = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
 
 type SignInDTO struct {
-	Username string `form:"username" binding:"required"`
+	Email    string `form:"email" binding:"required"`
 	Password string `form:"password" binding:"required"`
 }
 

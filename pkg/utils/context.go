@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/azeek21/blog/models"
 )
@@ -19,5 +20,7 @@ func GetUser(ctx context.Context) (*models.User, error) {
 
 func IsAuthed(ctx context.Context) bool {
 	user := ctx.Value(models.USER_MODEL_NAME)
-	return user != nil
+	isAuthed := user != nil
+	fmt.Printf("USER: %v -  %v+\n", isAuthed, user)
+	return isAuthed
 }

@@ -51,7 +51,12 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 		page_group.GET("/", middleware.NewPagingMiddleware(), h.IndexPage)
 		page_group.GET("/sign-in", h.SignInPage)
 		page_group.GET("/sign-up", h.SignUpPage)
-		page_group.GET("/articles/new", middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), true), h.NewArticlePage)
+		page_group.GET("/sign-out", h.SignOutPage)
+		page_group.GET(
+			"/articles/new",
+			middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), true),
+			h.NewArticlePage,
+		)
 		page_group.GET("/articles/:id", h.ArticleByIdPage)
 	}
 

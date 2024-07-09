@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 
@@ -14,7 +13,8 @@ import (
 
 var ERR_BAD_TOKEN = errors.New("Bad token")
 var ERR_CANT_PARS_CLAIMS = errors.New("Failed to get claims from token")
-var ERR_CANT_PARSE_USER_ID = errors.New("Failed to parse user is from token")
+var ERR_CANT_PARSE_USER_ID = errors.New("Failed to parse user id from token")
+var ERR_CANT_CREATE_TOKEN = errors.New("Failed to create new authentication token")
 
 type JwtServ struct{}
 
@@ -25,7 +25,6 @@ func NewJwtSerice() JwtService {
 func (s JwtServ) CreateJwt(user *models.User) (string, error) {
 	token := ""
 	key := []byte(viper.GetString("PRIVATE_KEY"))
-	log.Println("JWT SALT: ", key)
 
 	generatedAt := time.Now().Unix()
 	expiresAt := generatedAt + int64((time.Hour * 720).Seconds())
@@ -38,9 +37,7 @@ func (s JwtServ) CreateJwt(user *models.User) (string, error) {
 	})
 	token, err := t.SignedString(key)
 	if err != nil {
-
-		log.Println("O")
-		return token, err
+		return token, ERR_CANT_CREATE_TOKEN
 
 	}
 	return token, nil

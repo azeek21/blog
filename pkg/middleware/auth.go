@@ -28,12 +28,9 @@ func AuthMiddleware(userService service.UserService, jwtService service.JwtServi
 			c.Next()
 			return
 		}
+
 		tokenCookie, err := c.Request.Cookie(models.AUTH_COOKIE_NAME)
 		if isAborted(c, err, strict) {
-			return
-		}
-		if err != nil {
-			c.Next()
 			return
 		}
 
@@ -43,12 +40,16 @@ func AuthMiddleware(userService service.UserService, jwtService service.JwtServi
 		if isAborted(c, err, strict) {
 			return
 		}
-		user, err := userService.GetUserById(uint(user_id))
-		if isAborted(c, err, strict) {
-			return
+
+		if err == nil {
+			new_id := uint(user_id)
+			user, err := userService.GetUserById(new_id)
+			if isAborted(c, err, strict) {
+				return
+			}
+			c.Set(models.USER_MODEL_NAME, user)
 		}
 
-		c.Set(models.USER_MODEL_NAME, user)
 		c.Next()
 	}
 }
