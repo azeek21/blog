@@ -1,7 +1,18 @@
 console.log("Script loaded")
+const FULL_SCREEN_STYLES = {
+	position: "fixed",
+	top: 0,
+	left: 0,
+	width: "100vw",
+	height: "100vh",
+	zIndex: '1000',
+	backgroundColor: 'black',
+	maxWidth: "100%"
+}
+const FULL_SCREEN_ATTRIBUTE_NAME = "data-fullscreen";
 
 /**
-* @param {HTMLElement} alert
+* @param { HTMLElement } alert
 */
 function removeAlert(alert) {
 	/** @type {HTMLElement} parent */
@@ -68,3 +79,22 @@ newAlertCleaningWorker()
 console.log(htmx.config.useTemplateFragments)
 htmx.config.useTemplateFragments = true;
 console.log(htmx.config.useTemplateFragments)
+
+/** Toggles article form full screen
+ * @param {string} id - id of the element to toggle full screen
+ * */
+function toggleFullScreenById(id) {
+	const form = document.getElementById(id)
+	if (form) {
+		if (form.getAttribute(FULL_SCREEN_ATTRIBUTE_NAME)) {
+			form.style = null;
+			form.removeAttribute(FULL_SCREEN_ATTRIBUTE_NAME);
+			return
+		}
+		Object.entries(FULL_SCREEN_STYLES).map(([key, val]) => {
+			form.style[key] = val;
+		})
+		form.setAttribute(FULL_SCREEN_ATTRIBUTE_NAME, "true")
+	}
+}
+

@@ -16,10 +16,11 @@ type UserService interface {
 }
 
 type ArticleService interface {
+	GetArticles(paging models.PagingIncoming) ([]models.Article, error)
 	GetArticleById(articleId uint) (*models.Article, error)
 	CreateArticle(article *models.Article, authorId uint) (*models.Article, error)
 	UpdateArticle(article *models.Article) (*models.Article, error)
-	DeleteArticle(article *models.Article) (bool, error)
+	DeleteArticle(id uint) (bool, error)
 }
 
 type JwtService interface {

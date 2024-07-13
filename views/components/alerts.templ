@@ -1,9 +1,9 @@
 package components
 
-// level is one of ALERT_LEVELS
 import "github.com/azeek21/blog/models"
 import "fmt"
 
+// level is one of ALERT_LEVELS
 func GetAlertItemBaseClasses(level string) string {
 	baseClasses := "relative w-full duration-300 transition-all overflow-clip backdrop-blur-sm backdrop:blur p-2 border rounded-lg bg-opacity-30 text-sm h-min-content max-h-[4.5rem] focus:max-h-[70svh] focus:overflow-scroll"
 	if level == models.ALERT_LEVELS.ERROR {

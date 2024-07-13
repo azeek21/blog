@@ -27,6 +27,10 @@ func (s ArticleSer) UpdateArticle(article *models.Article) (*models.Article, err
 	return s.repo.Update(article)
 }
 
-func (s ArticleSer) DeleteArticle(article *models.Article) (bool, error) {
-	return s.repo.Delete(article)
+func (s ArticleSer) DeleteArticle(id uint) (bool, error) {
+	return s.repo.Delete(id)
+}
+
+func (s ArticleSer) GetArticles(paging models.PagingIncoming) ([]models.Article, error) {
+	return s.repo.GetArticles(paging)
 }

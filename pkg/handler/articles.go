@@ -1,16 +1,20 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"strconv"
 
+	"dario.cat/mergo"
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/utils"
+	"github.com/azeek21/blog/views/components"
 	"github.com/azeek21/blog/views/layouts"
 	"github.com/gin-gonic/gin"
 )
+
+var ERR_NOT_HAVE_PERMISSON = errors.New("You don't have a permission to perform this action")
 
 func (h Handler) ArticleByIdPage(ctx *gin.Context) {
 	_articleId := ctx.Param("id")
@@ -33,6 +37,27 @@ func (h Handler) ArticleByIdPage(ctx *gin.Context) {
 	utils.RenderTempl(ctx, 200, layouts.ArticleByIdPage(*article))
 }
 
+func (h Handler) EditArticlePage(ctx *gin.Context) {
+	_articleId := ctx.Param("id")
+	log.Println("ARTICLE ID: ", _articleId)
+
+	articleId, err := strconv.ParseUint(_articleId, 0, 64)
+	if err != nil {
+		ctx.String(400, err.Error())
+		ctx.Abort()
+		return
+	}
+
+	article, err := h.service.GetArticleById(uint(articleId))
+	if err != nil {
+		ctx.String(400, err.Error())
+		ctx.Abort()
+		return
+	}
+
+	utils.RenderTempl(ctx, 200, layouts.EditArticlePage(*article))
+}
+
 func (h Handler) NewArticlePage(ctx *gin.Context) {
 	utils.RenderTempl(ctx, 200, layouts.NewArticlePage())
 }
@@ -46,29 +71,105 @@ func (h Handler) GetArticleById(ctx *gin.Context) {
 }
 
 func (h Handler) CreateArticle(ctx *gin.Context) {
-	title := ctx.Request.FormValue("title")
-	image := ctx.Request.FormValue("image")
-	content := ctx.Request.FormValue("content")
-	newArticle := &models.Article{
-		Title:    title,
-		Content:  content,
-		ImageUrl: &image,
-	}
-	fmt.Printf("New Article: %+v\n", newArticle)
-	_, err := h.service.CreateArticle(newArticle, 1)
+	newArticle := &models.Article{}
+	err := ctx.ShouldBind(&newArticle)
 	if err != nil {
-		ctx.String(200, "Erroration")
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
 		ctx.Abort()
 		return
 	}
+
+	author_user, err := utils.GetUser(ctx)
+	if err != nil {
+
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, "500 something went wrong in the server"))
+		ctx.Abort()
+		return
+	}
+	_, err = h.service.CreateArticle(newArticle, author_user.ID)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
 	ctx.Header("HX-Redirect", fmt.Sprintf("/articles/%v", newArticle.ID))
-	//utils.RenderTempl(ctx, 200, components.MarkdownEditor(ttt.Content, ttt.Content, true))
 }
 
 func (h Handler) UpdateArticle(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"Status": "Ok"})
+	_articleId := ctx.Param("id")
+	articleId, err := utils.StringToUint(_articleId)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	article, err := h.service.GetArticleById(articleId)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	incomingArticle := &models.Article{}
+	err = ctx.ShouldBind(&incomingArticle)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	author_user, err := utils.GetUser(ctx)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, "500 something went wrong in the server"))
+		ctx.Abort()
+		return
+	}
+
+	if article.AuthorID != author_user.ID {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, ERR_NOT_HAVE_PERMISSON.Error()))
+		ctx.Abort()
+		return
+	}
+
+	if err := mergo.Merge(article, incomingArticle, mergo.WithOverride); err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, "500 something went wrong in the server"))
+		ctx.Abort()
+		return
+	}
+
+	_, err = h.service.ArticleService.UpdateArticle(article)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, "500 something went wrong in the server"))
+		ctx.Abort()
+		return
+	}
+
+	ctx.Header("HX-Redirect", fmt.Sprintf("/articles/%v", article.ID))
 }
 
 func (h Handler) DeleteArticle(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"Status": "Ok"})
+	_articleId := ctx.Param("id")
+	articleId, err := utils.StringToUint(_articleId)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	isDeleteted, err := h.service.DeleteArticle(articleId)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	if !isDeleteted {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, "500 something went terribly wrong"))
+		ctx.Abort()
+		return
+	}
+
+	ctx.Header("HX-Redirect", "/")
 }

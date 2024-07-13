@@ -23,7 +23,7 @@ func isAborted(c *gin.Context, err error, strict bool) bool {
 // TODO: refactor dependency injection
 func AuthMiddleware(userService service.UserService, jwtService service.JwtService, secret string, strict bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// we do this so if middleware is called inside nested routes, will will not verify and get the user multiple times
+		// NOTE: this is used if middleware is called inside an already authed request. Prevents verifying and querying multiple times
 		if utils.IsAuthed(c) {
 			c.Next()
 			return

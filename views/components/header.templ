@@ -27,7 +27,8 @@ templ userProfilePic() {
 
 templ Header() {
 	<header
-		class="w-full border-b border-inherit px-4 py-2 flex gap-2 h-min items-center sticky top-0 backdrop-filter backdrop-blur-lg"
+		class="w-full border-b border-inherit px-4 py-2 flex gap-2 h-min items-center sticky top-0 backdrop-filter backdrop-blur-lg z-10"
+		hx-boost="true"
 	>
 		<a href="/">
 			<img src="/public/logo.png" class="h-[50px] w-auto object-fit" alt="SiteLogo"/>

@@ -1,12 +1,14 @@
 package layouts
 
 import "github.com/azeek21/blog/views/components"
+import "github.com/azeek21/blog/models"
 
-templ IndexPage() {
+templ IndexPage(articles []models.Article) {
 	@components.BasePage("Azeek's blog - Home", "Share your experiences and thoughts word with the whole world") {
-		<div id="page-content" class="p-4 w-full h-full">
-			<h1 class="text-2xl">Latest articles</h1>
-			<div id="page-root" class="flex flex-col justify-between border border-red-400 gap-4"></div>
-		</div>
+		<h1 class="text-2xl">Latest articles</h1>
+		for _, article := range articles {
+			@components.ArticlePreview(article)
+		}
+		<h1>Hi</h1>
 	}
 }

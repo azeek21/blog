@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/azeek21/blog/models"
 	"gorm.io/gorm"
 )
@@ -29,14 +31,25 @@ func (r ArticleRepo) CreateArticle(article *models.Article) (*models.Article, er
 }
 
 func (r ArticleRepo) Update(article *models.Article) (*models.Article, error) {
+	log.Println("TO BE UPDATED: ", article.GetImage())
 	err := r.db.Save(article).Error
 	return article, err
 }
-func (r ArticleRepo) Delete(article *models.Article) (bool, error) {
-	article.DeletedAt = gorm.DeletedAt{}
-	err := r.db.Delete(article).Error
+
+func (r ArticleRepo) Delete(id uint) (bool, error) {
+	article, err := r.GetArticleById(id)
+	if err != nil {
+		return false, err
+	}
+
+	err = r.db.Delete(article).Error
 	if err != nil {
 		return false, err
 	}
 	return true, nil
+}
+func (r ArticleRepo) GetArticles(paging models.PagingIncoming) ([]models.Article, error) {
+	var articles []models.Article
+	err := r.db.Find(&articles).Error
+	return articles, err
 }

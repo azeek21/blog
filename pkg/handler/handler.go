@@ -19,6 +19,8 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error {
 	enginge.Static("public", staticPath)
+	lazyAuth := middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), false)
+	strictAuth := middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), true)
 
 	api_group := enginge.Group("/api")
 	{
@@ -26,8 +28,8 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 		{
 			articles.GET("/", h.GetAllArticles)
 			articles.GET("/:id", h.GetArticleById)
-			articles.POST("/", h.CreateArticle)
-			articles.PUT("/:id", h.UpdateArticle)
+			articles.POST("/", strictAuth, h.CreateArticle)
+			articles.PUT("/:id", strictAuth, h.UpdateArticle)
 			articles.DELETE("/:id", h.DeleteArticle)
 		}
 
@@ -46,7 +48,7 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 
 	}
 
-	page_group := enginge.Group("", middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), false))
+	page_group := enginge.Group("", lazyAuth)
 	{
 		page_group.GET("/", middleware.NewPagingMiddleware(), h.IndexPage)
 		page_group.GET("/sign-in", h.SignInPage)
@@ -54,10 +56,11 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 		page_group.GET("/sign-out", h.SignOutPage)
 		page_group.GET(
 			"/articles/new",
-			middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), true),
+			strictAuth,
 			h.NewArticlePage,
 		)
 		page_group.GET("/articles/:id", h.ArticleByIdPage)
+		page_group.GET("/articles/:id/edit", h.EditArticlePage)
 	}
 
 	return nil

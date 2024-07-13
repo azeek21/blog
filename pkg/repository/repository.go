@@ -28,10 +28,11 @@ type RoleRepository interface {
 }
 
 type ArticleRepository interface {
+	GetArticles(paging models.PagingIncoming) ([]models.Article, error)
 	GetArticleById(articleId uint) (*models.Article, error)
 	CreateArticle(*models.Article) (*models.Article, error)
 	Update(*models.Article) (*models.Article, error)
-	Delete(*models.Article) (bool, error)
+	Delete(id uint) (bool, error)
 }
 
 type Repository struct {
