@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/azeek21/blog/models"
+	"github.com/azeek21/blog/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -50,6 +51,7 @@ func (r ArticleRepo) Delete(id uint) (bool, error) {
 }
 func (r ArticleRepo) GetArticles(paging models.PagingIncoming) ([]models.Article, error) {
 	var articles []models.Article
-	err := r.db.Find(&articles).Error
+
+	err := r.db.Scopes(utils.Paginate(paging)).Find(&articles).Error
 	return articles, err
 }

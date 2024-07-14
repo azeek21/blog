@@ -34,11 +34,16 @@ type PasswordService interface {
 	VerifyPasswordAgainstHash(pwd string, hash string) (bool, error)
 }
 
+type CountingService interface {
+	Count(interface{}) int
+}
+
 type Service struct {
 	UserService
 	ArticleService
 	JwtService
 	PasswordService
+	CountingService
 }
 
 func NewService(repo *repository.Repository) *Service {
@@ -47,5 +52,6 @@ func NewService(repo *repository.Repository) *Service {
 		ArticleService:  newArticleService(repo.ArticleRepository),
 		JwtService:      NewJwtSerice(),
 		PasswordService: NewPasswordSerice(),
+		CountingService: NewCountService(repo.CountRepository),
 	}
 }

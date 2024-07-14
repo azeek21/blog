@@ -35,10 +35,15 @@ type ArticleRepository interface {
 	Delete(id uint) (bool, error)
 }
 
+type CountRepository interface {
+	Count(model interface{}) int64
+}
+
 type Repository struct {
 	UserRepository
 	RoleRepository
 	ArticleRepository
+	CountRepository
 }
 
 func NewRepositroy(db *gorm.DB) *Repository {
@@ -46,6 +51,7 @@ func NewRepositroy(db *gorm.DB) *Repository {
 		UserRepository:    NewUserRepository(db),
 		RoleRepository:    NewRolesRepository(db),
 		ArticleRepository: NewArticleRepositroy(db),
+		CountRepository:   NewCountRepository(db),
 	}
 }
 

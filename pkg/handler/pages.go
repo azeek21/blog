@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"log"
+
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/utils"
 	"github.com/azeek21/blog/views/components"
@@ -9,11 +11,22 @@ import (
 )
 
 func (h Handler) IndexPage(ctx *gin.Context) {
-	articles, err := h.service.ArticleService.GetArticles(models.PagingIncoming{})
+	paging, err := utils.GetPagingIncomingFromContext(ctx)
 	if err != nil {
 		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
 		ctx.Abort()
 		return
 	}
-	utils.RenderTempl(ctx, 200, layouts.IndexPage(articles))
+
+	articles, err := h.service.ArticleService.GetArticles(*paging)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	totalArticles := h.service.CountingService.Count(&models.Article{})
+	log.Println("TOTAL ARTICLES: ", totalArticles)
+
+	utils.RenderTempl(ctx, 200, layouts.IndexPage(articles, paging.TransformToOutgoing(totalArticles)))
 }

@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 const ARTICLE_MODEL_NAME = "article"
 
@@ -13,8 +15,9 @@ type Article struct {
 }
 
 func (a Article) HasImage() bool {
-	return a.ImageUrl != nil
+	return a.ImageUrl != nil && len(*a.ImageUrl) > 0
 }
+
 func (a Article) GetImage() string {
 	if a.HasImage() {
 		return *a.ImageUrl
