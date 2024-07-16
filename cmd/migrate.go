@@ -21,7 +21,8 @@ func main() {
 	db, err := repository.CreateDb(dbConf)
 	utils.Must(err)
 
-	err = db.Migrator().DropTable(&models.User{}, &models.Role{}, &models.Article{})
+	// err = db.Migrator().DropTable(&models.User{}, &models.Role{}, &models.Article{}) NOTE: do'nt drop tables
+
 	utils.Must(err)
 	err = db.AutoMigrate(&models.User{}, &models.Role{}, &models.Article{})
 	utils.Must(err)

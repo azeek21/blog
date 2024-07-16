@@ -1,4 +1,5 @@
 console.log("Script loaded")
+
 const FULL_SCREEN_STYLES = {
 	position: "fixed",
 	top: 0,
@@ -9,6 +10,7 @@ const FULL_SCREEN_STYLES = {
 	backgroundColor: 'black',
 	maxWidth: "100%"
 }
+
 const FULL_SCREEN_ATTRIBUTE_NAME = "data-fullscreen";
 
 /**

@@ -21,8 +21,9 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 	enginge.Static("public", staticPath)
 	lazyAuth := middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), false)
 	strictAuth := middleware.AuthMiddleware(h.service.UserService, h.service.JwtService, viper.GetString("PRIVATE_KEY"), true)
+	rateLmitter := middleware.RateLimitMiddleware()
 
-	api_group := enginge.Group("/api")
+	api_group := enginge.Group("/api", rateLmitter)
 	{
 		articles := api_group.Group("/articles")
 		{
@@ -30,37 +31,36 @@ func (h Handler) RegisterHandlers(enginge *gin.Engine, staticPath string) error 
 			articles.GET("/:id", h.GetArticleById)
 			articles.POST("/", strictAuth, h.CreateArticle)
 			articles.PUT("/:id", strictAuth, h.UpdateArticle)
-			articles.DELETE("/:id", h.DeleteArticle)
+			articles.DELETE("/:id", strictAuth, h.DeleteArticle)
 		}
 
 		auth_grup := api_group.Group("/auth")
 		{
 			auth_grup.POST("/sign-in", h.SignIn)
 			auth_grup.POST("/sign-up", h.SignUp)
-			auth_grup.POST("/sign-out", h.SignOut)
+			auth_grup.POST("/sign-out", strictAuth, h.SignOut)
 		}
 
 		markdown_group := api_group.Group("/markdown")
 		{
-			markdown_group.POST("/show-preview", h.ShowMarkdownPreview)
-			markdown_group.POST("/show-edit", h.ShowMarkdownEditor)
+			markdown_group.POST("/show-preview", strictAuth, h.ShowMarkdownPreview)
+			markdown_group.POST("/show-edit", strictAuth, h.ShowMarkdownEditor)
 		}
-
 	}
 
-	page_group := enginge.Group("", lazyAuth)
+	page_group := enginge.Group("", rateLmitter, lazyAuth)
 	{
 		page_group.GET("/", middleware.NewPagingMiddleware(), h.IndexPage)
 		page_group.GET("/sign-in", h.SignInPage)
 		page_group.GET("/sign-up", h.SignUpPage)
-		page_group.GET("/sign-out", h.SignOutPage)
+		page_group.GET("/sign-out", strictAuth, h.SignOutPage)
 		page_group.GET(
 			"/articles/new",
 			strictAuth,
 			h.NewArticlePage,
 		)
 		page_group.GET("/articles/:id", h.ArticleByIdPage)
-		page_group.GET("/articles/:id/edit", h.EditArticlePage)
+		page_group.GET("/articles/:id/edit", strictAuth, h.EditArticlePage)
 	}
 
 	return nil
