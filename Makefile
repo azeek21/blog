@@ -7,15 +7,14 @@ generate_views:
 generate: generate_views build
 	./bin/generate_logo
 
-migrate: build
-	./bin/migrate
+migrate-debug: build
+	GIN_MODE=debug ./bin/migrate
 
-#  || xargs go build -ldflags "-s -w" -o ./* 
+
+migrate-release: build
+	GIN_MODE=release ./bin/migrate
 
 dev: generate 
-	./bin/start
-
-dev_prepare: build generate migrate
 	./bin/start
 
 start: generate
@@ -26,4 +25,4 @@ clean:
 	rm -f ./public/logo.png
 	find ./views -name '*_templ.go' -delete
 
-.PHONY: build migrate start dev dev_prepare clean generate_views
+.PHONY: build start dev dev_prepare clean generate_views migrate-debug migrate-release

@@ -5,7 +5,7 @@ import "fmt"
 import "github.com/azeek21/blog/pkg/utils"
 
 templ ArticlePreview(article models.Article) {
-	<a id="post-preview" href={ templ.URL(fmt.Sprintf("/articles/%v", article.ID)) } class="flex flex-col gap-2 border border-inherit rounded-lg p-2">
+	<a id="post-preview" href={ templ.URL(fmt.Sprintf("/articles/%v", article.ID)) } class="flex flex-col gap-2 border border-inherit rounded-lg p-2 max-h-[300px]">
 		<div id="post-preview-media" class="w-full flex gap-2 items-center">
 			<div id="post-preview-image" class="min-w-[25%] w-1/4 sm:max-w-[50px] lg:max-w-[100px] xl:max-w-[200px] aspect-square overflow-clip">
 				if article.HasImage() {
@@ -17,7 +17,9 @@ templ ArticlePreview(article models.Article) {
 			<h1 id="post-review-title" class="text-lg line-clamp-3">{ article.Title }</h1>
 		</div>
 		<div id="post-preview-meta" class="overflow-hidden">
-			<p id="post-preview-content" class="text-sm line-clamp-5">{ article.Content }</p>
+			<p id="post-preview-content" class="text-sm line-clamp-5">
+				{ article.Description }
+			</p>
 		</div>
 	</a>
 }
@@ -35,7 +37,10 @@ templ Article(article models.Article) {
 			if article.HasImage() {
 				<img class="max-h-96 h-full aspect-video w-auto object-contain mx-auto" src={ article.GetImage() } alt={ article.Title }/>
 			}
-			<h1 id="post-title" class="text-5xl  border-b border-blue-300 py-4">{ article.Title }</h1>
+			<div class="border-b border-blue-300 py-4 flex flex-col gap-4">
+				<h1 id="post-title" class="text-5xl">{ article.Title }</h1>
+				<p id="post-title" class="text-xl">{ article.Description }</p>
+			</div>
 			@MarkdownView(article.Content, true)
 		</div>
 	</div>

@@ -30,11 +30,19 @@ templ IndexPage(articles []models.Article, paging *models.PagingOutGoing) {
 				</div>
 			</div>
 		} else {
-			<p>Be the first to publish an article </p>
-			if utils.IsAuthed(ctx) {
-				<a href="">Write an article now!</a>
-			}
-			<a href="">Sign up now and pubish an article</a>
+			<div id="no-articles-fallback" class="flex gap-4 flex-col" hx-boost="true">
+				<h1 class="text-4xl">
+					Whoops ¯\_(ツ)_/¯
+				</h1>
+				<h1 class="text-4xl">
+					Looks like we are out of articles right now
+				</h1>
+				<p class="text-xl">Be the first to publish an article </p>
+				if utils.IsAuthed(ctx) {
+					<a href="/articles/new">Write an article now!</a>
+				}
+				<a href="/sign-up" class="text-blue-500">Sign up now and pubish an article</a>
+			</div>
 		}
 	}
 }

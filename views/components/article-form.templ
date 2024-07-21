@@ -42,11 +42,13 @@ templ ArticleForm(articleId, image, title, content string, showPreview bool) {
 			}
 			hx-trigger="submit"
 			hx-indicator="#article-form"
+			hx-swap="none"
 			class="flex flex-col gap-4 w-full border-inherit h-full"
 		>
 			<h1 class="text-3xl">Create new article</h1>
 			@FormField(FormFieldProps{Label: "Image", Name: "image", Type: "text", Placeholder: "External image url or link to an image", InitialValue: image})
 			@FormField(FormFieldProps{Label: "Title", Name: "title", Type: "text", Placeholder: "Some clickbait title LoL", InitialValue: title})
+			@FormField(FormFieldProps{Label: "Description", Name: "description", Type: "text", Placeholder: "Describe your article in a few words. Best when 2-3 sentences long.", InitialValue: title})
 			@MarkdownEditor(content, content, showPreview)
 			<button type="submit" class="submit border border-inherit rounded-lg py-1">Save</button>
 		</form>

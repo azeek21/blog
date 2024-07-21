@@ -157,6 +157,25 @@ func (h Handler) DeleteArticle(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
+	article, err := h.service.ArticleService.GetArticleById(articleId)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	current_user, err := utils.GetUser(ctx)
+	if err != nil {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, err.Error()))
+		ctx.Abort()
+		return
+	}
+
+	if article.AuthorID != current_user.ID {
+		utils.RenderTempl(ctx, 200, components.AlertsContainer(models.ALERT_LEVELS.ERROR, ERR_NOT_HAVE_PERMISSON.Error()))
+		ctx.Abort()
+		return
+	}
 
 	isDeleteted, err := h.service.DeleteArticle(articleId)
 	if err != nil {
