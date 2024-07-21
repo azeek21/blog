@@ -5,6 +5,7 @@ import (
 
 	"github.com/azeek21/blog/models"
 	"github.com/azeek21/blog/pkg/repository"
+	"github.com/azeek21/blog/pkg/service"
 	"github.com/azeek21/blog/pkg/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -21,7 +22,7 @@ func main() {
 	db, err := repository.CreateDb(dbConf)
 	utils.Must(err)
 
-	// err = db.Migrator().DropTable(&models.User{}, &models.Role{}, &models.Article{}) NOTE: do'nt drop tables
+	err = db.Migrator().DropTable(&models.User{}, &models.Role{}, &models.Article{}) // NOTE: do'nt drop tables
 
 	utils.Must(err)
 	err = db.AutoMigrate(&models.User{}, &models.Role{}, &models.Article{})
@@ -40,12 +41,16 @@ func main() {
 		}
 		utils.Must(err)
 	}
+	passWordSerice := service.NewPasswordSerice()
+	pwHash, err := passWordSerice.CreateHash(viper.GetString("SU_PWD"))
+
+	utils.Must(err)
 
 	superUser := &models.User{
 		Email:    viper.GetString("SU_EMAIL"),
 		FullName: viper.GetString("SU_FULL_NAME"),
 		Username: viper.GetString("SU_USERNAME"),
-		Password: viper.GetString("SU_PWD"),
+		Password: pwHash,
 		RoleCode: "admin",
 	}
 
